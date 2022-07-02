@@ -2,7 +2,7 @@
   "name": "nest-typescript-starter",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Networking App Api",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
