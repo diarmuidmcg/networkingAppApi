@@ -49,7 +49,6 @@ export class UsersController {
 
   @Delete(':id')
   // @UseGuards(AuthGuard('jwt'))
-  // @UseInterceptors(FilesInterceptor('file'))
   async deleteUser(@Req() request, @Res() response) {
     return await this.appService.deleteUser(request, response);
   }
