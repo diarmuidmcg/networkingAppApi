@@ -12,11 +12,10 @@ export class UsersService {
   ) {}
 
   async getUsers(request, response): Promise<Users[]> {
-    const numberOfUsers = await this.usersRepository
+    const users = await this.usersRepository
       .createQueryBuilder('users')
-
       .getMany();
-    return response.status(200).json(numberOfUsers);
+    return response.status(200).json(users);
   }
 
   async getSingleUser(request, response): Promise<Users[]> {
@@ -38,7 +37,6 @@ export class UsersService {
       linkedin_username,
       instagram_username,
     } = request.body;
-
     const newUser = new Users();
     newUser.first_name = first_name !== null ? first_name : '';
     newUser.last_name = last_name !== null ? last_name : '';
@@ -87,11 +85,15 @@ export class UsersService {
     // globalThis.Logger.log({ level: 'info', message: JSON.stringify(newBlog) });
 
     const data = await this.usersRepository.update({ id }, updatedUser);
+    const user = await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.id = :id', { id })
+      .getOne();
     // globalThis.Logger.log({
     //   level: 'info',
     //   message: 'New Blog Response ' + JSON.stringify(data),
     // });
-    return response.status(200).json(data);
+    return response.status(200).json(user);
   }
 
   async deleteUser(request, response): Promise<Users[]> {

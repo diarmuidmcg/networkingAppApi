@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 export class BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id?: number;
 
   @CreateDateColumn({ nullable: true })

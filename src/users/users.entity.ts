@@ -3,6 +3,7 @@ import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('users')
 export class Users extends BaseEntity {
+  // separated these out incase we want to only diplay first name at some stage
   @Column({ type: 'varchar', length: 150, nullable: false })
   first_name: string;
 
