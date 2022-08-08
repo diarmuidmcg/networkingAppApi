@@ -4,8 +4,24 @@ import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
 @Entity('users')
 export class Users extends BaseEntity {
   @Column({ type: 'varchar', length: 150, nullable: false })
-  title: String;
+  first_name: string;
 
-  @Column({ type: 'text', nullable: false, default: 'null' })
-  content: String;
+  @Column({ type: 'varchar', length: 150, nullable: false })
+  last_name: string;
+
+  // dont want to set a limit in case its an apple relay thats super long
+  @Column({ type: 'text', nullable: false })
+  email: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  phone_number: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  occupation: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  linkedin_username: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  instagram_username: string;
 }
