@@ -12,18 +12,28 @@ export class UsersService {
   ) {}
 
   async getUsers(request, response): Promise<Users[]> {
+    globalThis.Logger.log({ level: 'info', message: 'Get users ' });
     const users = await this.usersRepository
       .createQueryBuilder('users')
       .getMany();
+    globalThis.Logger.log({
+      level: 'info',
+      message: 'Get Users Response ' + JSON.stringify(users),
+    });
     return response.status(200).json(users);
   }
 
   async getSingleUser(request, response): Promise<Users[]> {
     const { id } = request.params;
+    globalThis.Logger.log({ level: 'info', message: 'Get user ' + id });
     const user = await this.usersRepository
       .createQueryBuilder('users')
       .where('users.id = :id', { id })
       .getOne();
+    globalThis.Logger.log({
+      level: 'info',
+      message: 'Get User Response ' + JSON.stringify(user),
+    });
     return response.status(200).json(user);
   }
 
@@ -48,14 +58,14 @@ export class UsersService {
     newUser.instagram_username =
       instagram_username !== null ? instagram_username : '';
 
-    // globalThis.Logger.log({ level: 'info', message: 'New Blog' });
-    // globalThis.Logger.log({ level: 'info', message: JSON.stringify(newBlog) });
+    globalThis.Logger.log({ level: 'info', message: 'New User' });
+    globalThis.Logger.log({ level: 'info', message: JSON.stringify(newUser) });
 
     const data = await this.usersRepository.save(newUser);
-    // globalThis.Logger.log({
-    //   level: 'info',
-    //   message: 'New Blog Response ' + JSON.stringify(data),
-    // });
+    globalThis.Logger.log({
+      level: 'info',
+      message: 'New User Response ' + JSON.stringify(data),
+    });
     return response.status(200).json(data);
   }
 
@@ -81,26 +91,32 @@ export class UsersService {
     updatedUser.instagram_username =
       instagram_username !== null ? instagram_username : '';
 
-    // globalThis.Logger.log({ level: 'info', message: 'New Blog' });
-    // globalThis.Logger.log({ level: 'info', message: JSON.stringify(newBlog) });
+    globalThis.Logger.log({ level: 'info', message: 'Update User' });
+    globalThis.Logger.log({
+      level: 'info',
+      message: JSON.stringify(updatedUser),
+    });
 
     const data = await this.usersRepository.update({ id }, updatedUser);
     const user = await this.usersRepository
       .createQueryBuilder('users')
       .where('users.id = :id', { id })
       .getOne();
-    // globalThis.Logger.log({
-    //   level: 'info',
-    //   message: 'New Blog Response ' + JSON.stringify(data),
-    // });
+    globalThis.Logger.log({
+      level: 'info',
+      message: 'Updated User Response ' + JSON.stringify(data),
+    });
     return response.status(200).json(user);
   }
 
   async deleteUser(request, response): Promise<Users[]> {
     const { id } = request.params;
-    // globalThis.Logger.log({"level": "info", "message": "Remove user " + id});
+    globalThis.Logger.log({ level: 'info', message: 'Remove user ' + id });
     const user = await this.usersRepository.delete({ id });
-    // globalThis.Logger.log({"level": "info", "message": "Remove User Response " + JSON.stringify(item)});
+    globalThis.Logger.log({
+      level: 'info',
+      message: 'Remove User Response ' + JSON.stringify(user),
+    });
     return response.status(200).json(user);
   }
 }
