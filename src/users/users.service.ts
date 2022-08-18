@@ -5,6 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './users.entity';
 
+const validateEmail = (email) => {
+  return email.match(
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  );
+};
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -53,6 +59,8 @@ export class UsersService {
     if (!first_name) mustInclude.push('first_name');
     if (!last_name) mustInclude.push('last_name');
     if (!email) mustInclude.push('email');
+    // type check email
+    if (!validateEmail(email)) mustInclude.push('email must be proper format');
     if (mustInclude.length > 0)
       return response.status(400).json({
         error:
