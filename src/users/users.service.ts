@@ -110,15 +110,31 @@ export class UsersService {
     } = request.body;
     const { id } = request.params;
     const updatedUser = new Users();
+
+    // type check all NOT Nullable
+    let mustInclude = [];
     if (first_name != undefined) updatedUser.first_name = first_name;
-    updatedUser.last_name = last_name !== null ? last_name : '';
-    updatedUser.email = email !== null ? email : '';
-    updatedUser.phone_number = phone_number !== null ? phone_number : '';
-    updatedUser.occupation = occupation !== null ? occupation : '';
-    updatedUser.linkedin_username =
-      linkedin_username !== null ? linkedin_username : '';
-    updatedUser.instagram_username =
-      instagram_username !== null ? instagram_username : '';
+    if (last_name != undefined) updatedUser.last_name = last_name;
+    if (email != undefined) {
+      // type check email
+      if (!validateEmail(email))
+        mustInclude.push('email must be proper format');
+      updatedUser.email = email;
+    }
+
+    if (phone_number != undefined) updatedUser.phone_number = phone_number;
+    if (occupation != undefined) updatedUser.occupation = occupation;
+    if (linkedin_username != undefined)
+      updatedUser.linkedin_username = linkedin_username;
+    if (instagram_username != undefined)
+      updatedUser.instagram_username = instagram_username;
+
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'These were the issues with your BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
 
     globalThis.Logger.log({ level: 'info', message: 'Update User' });
     globalThis.Logger.log({
