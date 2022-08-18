@@ -47,6 +47,19 @@ export class UsersService {
       linkedin_username,
       instagram_username,
     } = request.body;
+
+    // type check all NOT Nullable
+    let mustInclude = [];
+    if (!first_name) mustInclude.push('first_name');
+    if (!last_name) mustInclude.push('last_name');
+    if (!email) mustInclude.push('email');
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'You must include these BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
+
     const newUser = new Users();
     newUser.first_name = first_name !== null ? first_name : '';
     newUser.last_name = last_name !== null ? last_name : '';
@@ -61,12 +74,20 @@ export class UsersService {
     globalThis.Logger.log({ level: 'info', message: 'New User' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newUser) });
 
-    const data = await this.usersRepository.save(newUser);
-    globalThis.Logger.log({
-      level: 'info',
-      message: 'New User Response ' + JSON.stringify(data),
-    });
-    return response.status(200).json(data);
+    try {
+      const data = await this.usersRepository.save(newUser);
+      globalThis.Logger.log({
+        level: 'info',
+        message: 'New User Response error ' + JSON.stringify(data),
+      });
+      return response.status(200).json(data);
+    } catch (e) {
+      globalThis.Logger.log({
+        level: 'info',
+        message: 'New User Response Error' + JSON.stringify(e),
+      });
+      return response.status(400).json({ error: e });
+    }
   }
 
   public async updateUser(request, response): Promise<Users[]> {
@@ -81,7 +102,7 @@ export class UsersService {
     } = request.body;
     const { id } = request.params;
     const updatedUser = new Users();
-    updatedUser.first_name = first_name !== null ? first_name : '';
+    if (first_name != undefined) updatedUser.first_name = first_name;
     updatedUser.last_name = last_name !== null ? last_name : '';
     updatedUser.email = email !== null ? email : '';
     updatedUser.phone_number = phone_number !== null ? phone_number : '';
