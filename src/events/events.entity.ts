@@ -9,11 +9,11 @@ export class Events extends BaseEntity {
   @Column({ type: 'varchar', length: 150, nullable: false })
   location: string;
 
-  @Column({ type: 'date', nullable: false })
-  date: Date;
+  @Column({ type: 'varchar', nullable: true })
+  date: string;
 
-  @Column({ type: 'timestamptz', nullable: false })
-  time: Date;
+  @Column({ type: 'varchar', nullable: true })
+  time: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
   price: string;

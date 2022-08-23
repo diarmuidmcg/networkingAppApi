@@ -7,6 +7,36 @@ import { title } from 'process';
 import { Repository } from 'typeorm';
 import { Events } from './events.entity';
 
+const validateDate = (date) => {
+  // return date.match(
+  //   /^\d{4}\/\d{1,2}\/\d{1,2}$/,
+  // );
+  if(!date.match(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/))
+    return false;
+  var parts = date.split("/");
+  var day = parseInt(parts[0], 10);
+  var month = parseInt(parts[1], 10);
+  var year = parseInt(parts[2], 10);
+
+  // Check the ranges of month and year
+  if(year < 1000 || year > 3000 || month == 0 || month > 12)
+    return false;
+
+  var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+  // Adjust for leap years
+  if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+    monthLength[1] = 29;
+
+  // Check the range of the day
+  return day > 0 && day <= monthLength[month - 1];  
+  return true;
+};
+const validateTime = (time) => {
+  if(!time.match(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/))
+    return false
+  return true;
+};
 @Injectable()
 export class EventsService {
   constructor(
@@ -48,6 +78,23 @@ export class EventsService {
       price,
       description,  
     } = request.body;
+
+    // type check all NOT Nullable
+    let mustInclude = [];
+    if (!title) mustInclude.push('title');
+    if (!location) mustInclude.push('location');
+    if (!date) mustInclude.push('date');
+    
+    // type check date and time
+    if (!validateDate(date)) mustInclude.push('date must be proper format');
+    if (!validateTime(time)) mustInclude.push('time must be proper format');
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'You must include these BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
+
     const newEvent = new Events();
     newEvent.title = title !== null ? title : '';
     newEvent.location = location !== null ? location : '';
@@ -55,18 +102,27 @@ export class EventsService {
     newEvent.time = time !== null ? time : '';
     newEvent.price = price !== null ? price : '';
     newEvent.description =
-      description !== null ? description : '';
+    description !== null ? description : '';
     
 
     globalThis.Logger.log({ level: 'info', message: 'New Event' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newEvent) });
 
-    const data = await this.eventsRepository.save(newEvent);
-    globalThis.Logger.log({
+    // try {
+      const data = await this.eventsRepository.save(newEvent);
+      globalThis.Logger.log({
       level: 'info',
       message: 'New Event Response ' + JSON.stringify(data),
     });
     return response.status(200).json(data);
+    // // } catch (e) {
+    //   globalThis.Logger.log({
+    //     level: 'info',
+    //     message: 'New User Response Error' + JSON.stringify(e),
+    //   });
+    //   return response.status(400).json({ error: e });
+    // // }
+    
   }
 
   public async updateEvent(request, response): Promise<Events[]> {
@@ -80,13 +136,34 @@ export class EventsService {
     } = request.body;
     const { id } = request.params;
     const updatedEvent = new Events();
-    updatedEvent.title = title !== null ? title : '';
-    updatedEvent.location = location !== null ? location : '';
-    updatedEvent.date = date !== null ? date : '';
-    updatedEvent.time = time !== null ? time : '';
-    updatedEvent.price = price !== null ? price : '';
-    updatedEvent.description = description !== null ? description : '';
+    
+    // type check all NOT Nullable
+    let mustInclude = [];
+    if (title != undefined) updatedEvent.title = title;
+    if (location != undefined) updatedEvent.location = location;
+    if (date != undefined) {
+      // type check date
+      if (!validateDate(date))
+        mustInclude.push('date must be proper format');
+      updatedEvent.date = date;
+    }
+    if (time != undefined) {
+      //type check time
+      if(!validateTime(time))
+        mustInclude.push('time must be a proper format')
+      updatedEvent.time = time;
+    }
 
+    if (price != undefined) updatedEvent.price = price;
+    if (description != undefined) updatedEvent.description = description;
+    
+
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'These were the issues with your BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
 
     globalThis.Logger.log({ level: 'info', message: 'Update Event' });
     globalThis.Logger.log({
