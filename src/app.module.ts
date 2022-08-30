@@ -22,15 +22,24 @@ import { EventsModule } from './events/events.module';
 import { EventsService } from './events/events.service';
 import { EventsController } from './events/events.controller';
 
+import { ImagesController } from './images/images.controller';
+import { ImagesModule } from './images/images.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(config),
     WinstonModule.forRoot(logger.console()),
     UsersModule,
     EventsModule,
+    ImagesModule,
     TypeOrmModule.forFeature([Users, Events]),
   ],
-  controllers: [AppController, UsersController, EventsController],
+  controllers: [
+    AppController,
+    UsersController,
+    EventsController,
+    ImagesController,
+  ],
   providers: [AppService, UsersService, EventsService],
 })
 export class AppModule {}

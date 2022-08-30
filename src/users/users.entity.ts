@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/BaseEntity';
 import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
-
+import { Image } from 'src/images/image.entity';
 @Entity('users')
 export class Users extends BaseEntity {
   // separated these out incase we want to only diplay first name at some stage
@@ -25,4 +25,10 @@ export class Users extends BaseEntity {
 
   @Column({ type: 'varchar', length: 150, nullable: true })
   instagram_username: string;
+
+  @OneToMany(() => Image, (image) => image.user, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  image: Image[];
 }

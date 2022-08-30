@@ -4,10 +4,14 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { Users } from './users.entity';
 
+import { Image } from 'src/images/image.entity';
+import { ImagesService } from 'src/images/images.service';
+import { ImagesModule } from 'src/images/images.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([Users])],
+  imports: [ImagesModule, TypeOrmModule.forFeature([Users, Image])],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, ImagesService],
   exports: [UsersService],
 })
 export class UsersModule {}
