@@ -9,9 +9,9 @@ import { ImagesService } from 'src/images/images.service';
 import { ImagesModule } from 'src/images/images.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Events, Image])],
+  imports: [ImagesModule, TypeOrmModule.forFeature([Events, Image])],
   controllers: [EventsController],
-  providers: [EventsService],
+  providers: [EventsService, ImagesService],
   exports: [EventsService],
 })
 export class EventsModule {}

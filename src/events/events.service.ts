@@ -7,6 +7,8 @@ import { title } from 'process';
 import { Repository } from 'typeorm';
 import { Events } from './events.entity';
 
+import { ImagesService } from 'src/images/images.service';
+
 const validateDate = (date) => {
   // return date.match(
   //   /^\d{4}\/\d{1,2}\/\d{1,2}$/,
@@ -41,6 +43,7 @@ const validateTime = (time) => {
 export class EventsService {
   constructor(
     @InjectRepository(Events) private eventsRepository: Repository<Events>,
+    private readonly imageService: ImagesService,
   ) {}
 
   async getEvents(request, response): Promise<Events[]> {
@@ -77,10 +80,18 @@ export class EventsService {
     if (!title) mustInclude.push('title');
     if (!location) mustInclude.push('location');
     if (!date) mustInclude.push('date');
+    // only run the validate functions if date exists
+    else {
+      // type check date and time
+      if (!validateDate(date)) mustInclude.push('date must be proper format');
+    }
+    if (!time) mustInclude.push('time');
+    // only run the validate functions if date exists
+    else {
+      // type check date and time
+      if (!validateTime(time)) mustInclude.push('time must be proper format');
+    }
 
-    // type check date and time
-    if (!validateDate(date)) mustInclude.push('date must be proper format');
-    if (!validateTime(time)) mustInclude.push('time must be proper format');
     if (mustInclude.length > 0)
       return response.status(400).json({
         error:
@@ -89,6 +100,21 @@ export class EventsService {
       });
 
     const newEvent = new Events();
+
+    // image upload
+    const uploadImages = [];
+    if (files) {
+      for (let x = 0; x < files.length; x++) {
+        const blob = files[x];
+        await this.imageService
+          .uploadImageAsBlob(blob.buffer, blob.mimetype)
+          .then((result) => {
+            uploadImages.push(result);
+          });
+      }
+      newEvent.image = uploadImages;
+    }
+
     newEvent.title = title !== null ? title : '';
     newEvent.location = location !== null ? location : '';
     newEvent.date = date !== null ? date : '';
@@ -133,6 +159,20 @@ export class EventsService {
       //type check time
       if (!validateTime(time)) mustInclude.push('time must be a proper format');
       updatedEvent.time = time;
+    }
+
+    // image upload
+    const uploadImages = [];
+    if (files) {
+      for (let x = 0; x < files.length; x++) {
+        const blob = files[x];
+        await this.imageService
+          .uploadImageAsBlob(blob.buffer, blob.mimetype)
+          .then((result) => {
+            uploadImages.push(result);
+          });
+      }
+      updatedEvent.image = uploadImages;
     }
 
     if (price != undefined) updatedEvent.price = price;
