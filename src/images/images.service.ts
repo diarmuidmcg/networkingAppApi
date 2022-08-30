@@ -17,13 +17,13 @@ export class ImagesService {
   async uploadPublicFile(dataBuffer: Buffer, filename: string) {
     const s3 = new S3({
       region: process.env.CLOUDWATCH_AWS_REGION,
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
     });
     const bufferRep = dataBuffer;
     const uploadResult = await s3
       .upload({
-        Bucket: 'refunk-upcycling-donated-images',
+        Bucket: process.env.S3_BUCKET,
         Body: bufferRep,
         Key: `${uuid()}-${filename}`,
       })
@@ -39,12 +39,12 @@ export class ImagesService {
   async uploadImageAsBlob(dataBuffer: Buffer, mimetype: string) {
     const s3 = new S3({
       region: process.env.CLOUDWATCH_AWS_REGION,
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
     });
     const uploadResult = await s3
       .upload({
-        Bucket: 'refunk-upcycling-donated-images',
+        Bucket: process.env.S3_BUCKET,
         Body: dataBuffer,
         Key: `${uuid()}`,
         ContentType: mimetype,
