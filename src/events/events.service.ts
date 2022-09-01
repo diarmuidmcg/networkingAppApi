@@ -55,6 +55,7 @@ export class EventsService {
     globalThis.Logger.log({ level: 'info', message: 'Get events ' });
     const events = await this.eventsRepository
       .createQueryBuilder('events')
+      .leftJoinAndSelect('events.image', 'image')
       .getMany();
     globalThis.Logger.log({
       level: 'info',
@@ -68,6 +69,7 @@ export class EventsService {
     globalThis.Logger.log({ level: 'info', message: 'Get event ' + id });
     const event = await this.eventsRepository
       .createQueryBuilder('events')
+      .leftJoinAndSelect('events.image', 'image')
       .where('events.id = :id', { id })
       .getOne();
     globalThis.Logger.log({
