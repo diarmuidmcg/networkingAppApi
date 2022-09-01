@@ -3,6 +3,9 @@ import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('events')
 export class Events extends BaseEntity {
+  @Column({ type: 'bytea',  nullable: true })
+  image: Uint8Array;
+
   @Column({ type: 'varchar', length: 150, nullable: false })
   title: string;
 
