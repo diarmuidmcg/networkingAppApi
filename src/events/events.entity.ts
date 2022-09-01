@@ -1,6 +1,14 @@
 import { BaseEntity } from 'src/BaseEntity';
-import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Image } from 'src/images/image.entity';
+import { Users } from 'src/users/users.entity';
 @Entity('events')
 export class Events extends BaseEntity {
   @Column({ type: 'varchar', length: 150, nullable: false })
@@ -26,4 +34,16 @@ export class Events extends BaseEntity {
   })
   @JoinColumn()
   image: Image[];
+
+  @ManyToOne(() => Users, (user) => user.hosted_events, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  host: Users;
+
+  @ManyToMany(() => Users, (user) => user.attended_events, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  attendees: Users[];
 }

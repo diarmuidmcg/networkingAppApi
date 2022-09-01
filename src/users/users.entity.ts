@@ -1,6 +1,7 @@
 import { BaseEntity } from 'src/BaseEntity';
-import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToMany, JoinColumn } from 'typeorm';
 import { Image } from 'src/images/image.entity';
+import { Events } from 'src/events/events.entity';
 @Entity('users')
 export class Users extends BaseEntity {
   // separated these out incase we want to only diplay first name at some stage
@@ -31,4 +32,16 @@ export class Users extends BaseEntity {
   })
   @JoinColumn()
   image: Image[];
+
+  @OneToMany(() => Events, (event) => event.host, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  hosted_events: Events[];
+
+  @ManyToMany(() => Events, (event) => event.attendees, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  attended_events: Events[];
 }

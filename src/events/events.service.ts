@@ -45,11 +45,43 @@ export class EventsService {
   ) {}
 
   async getEvents(request, response): Promise<Events[]> {
+    // if query param 'hostId' or 'orgId' is passed in, just get related ones
+    const { offset, limit, hostId, orgId } = request.query;
     globalThis.Logger.log({ level: 'info', message: 'Get events ' });
-    const events = await this.eventsRepository
-      .createQueryBuilder('events')
-      .leftJoinAndSelect('events.image', 'image')
-      .getMany();
+
+    let events;
+
+    if (offset != undefined && limit != undefined) {
+      if (hostId != undefined) {
+        events = await this.eventsRepository
+          .createQueryBuilder('events')
+          .leftJoinAndSelect('events.image', 'image')
+          .take(limit)
+          .skip(offset)
+          .where('hires.host.id = :id', { id: hostId })
+          .getMany();
+      } else if (orgId != undefined) {
+        events = await this.eventsRepository
+          .createQueryBuilder('events')
+          .leftJoinAndSelect('events.image', 'image')
+          .take(limit)
+          .skip(offset)
+          .where('hires.organization.id = :id', { id: orgId })
+          .getMany();
+      } else {
+        events = await this.eventsRepository
+          .createQueryBuilder('events')
+          .leftJoinAndSelect('events.image', 'image')
+          .take(limit)
+          .skip(offset)
+          .getMany();
+      }
+    } else {
+      events = await this.eventsRepository
+        .createQueryBuilder('events')
+        .leftJoinAndSelect('events.image', 'image')
+        .getMany();
+    }
     globalThis.Logger.log({
       level: 'info',
       message: 'Get Events Response ' + JSON.stringify(events),
