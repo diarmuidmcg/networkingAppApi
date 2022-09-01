@@ -3,9 +3,6 @@ import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Image } from 'src/images/image.entity';
 @Entity('events')
 export class Events extends BaseEntity {
-  @Column({ type: 'bytea',  nullable: true })
-  image: Uint8Array;
-
   @Column({ type: 'varchar', length: 150, nullable: false })
   title: string;
 
