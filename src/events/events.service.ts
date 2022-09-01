@@ -17,7 +17,6 @@ const validateDate = (date) => {
     !date.match(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/)
   )
     return false;
-  console.log('got past regex');
   var parts = date.split('/');
   var day = parseInt(parts[0], 10);
   var month = parseInt(parts[1], 10);
@@ -25,19 +24,13 @@ const validateDate = (date) => {
 
   // Check the ranges of month and year
   if (year < 1000 || year > 3000 || month == 0 || month > 12) return false;
-  console.log('got past year');
   var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   // Adjust for leap years
   if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
     monthLength[1] = 29;
-  console.log('got past month');
-  console.log('day', day);
-  console.log('month', month);
-  console.log('year', year);
   // Check the range of the day
   return day > 0 && day <= monthLength[month - 1];
-  console.log('got past day');
   return true;
 };
 const validateTime = (time) => {
