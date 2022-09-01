@@ -35,16 +35,24 @@ export class EventsController {
 
   @Post('')
   // @UseGuards(AuthGuard('jwt'))
-  // @UseInterceptors(FilesInterceptor('file'))
-  async createEvent(@Req() request, @Res() response) {
-    return await this.appService.createEvent(request, response);
+  @UseInterceptors(FilesInterceptor('file'))
+  async createEvent(
+    @Req() request,
+    @Res() response,
+    @UploadedFiles() files: Express.Multer.File,
+  ) {
+    return await this.appService.createEvent(files, request, response);
   }
 
   @Put(':id')
   // @UseGuards(AuthGuard('jwt'))
-  // @UseInterceptors(FilesInterceptor('file'))
-  async updateEvent(@Req() request, @Res() response) {
-    return await this.appService.updateEvent(request, response);
+  @UseInterceptors(FilesInterceptor('file'))
+  async updateEvent(
+    @Req() request,
+    @Res() response,
+    @UploadedFiles() files: Express.Multer.File,
+  ) {
+    return await this.appService.updateEvent(files, request, response);
   }
 
   @Delete(':id')

@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/BaseEntity';
 import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
-
+import { Image } from 'src/images/image.entity';
 @Entity('events')
 export class Events extends BaseEntity {
   @Column({ type: 'bytea',  nullable: true })
@@ -23,4 +23,10 @@ export class Events extends BaseEntity {
 
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @OneToMany(() => Image, (image) => image.event, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  image: Image[];
 }
