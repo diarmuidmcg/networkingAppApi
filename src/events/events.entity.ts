@@ -6,6 +6,7 @@ import {
   ManyToMany,
   ManyToOne,
   JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import { Image } from 'src/images/image.entity';
 import { Users } from 'src/users/users.entity';
@@ -44,6 +45,6 @@ export class Events extends BaseEntity {
   @ManyToMany(() => Users, (user) => user.attended_events, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
+  @JoinTable()
   attendees: Users[];
 }

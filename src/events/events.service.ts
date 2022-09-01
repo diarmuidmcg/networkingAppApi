@@ -56,6 +56,8 @@ export class EventsService {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
+          .leftJoinAndSelect('events.host', 'host')
+          .leftJoinAndSelect('events.attendees', 'attendees')
           .take(limit)
           .skip(offset)
           .where('hires.host.id = :id', { id: hostId })
@@ -64,6 +66,8 @@ export class EventsService {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
+          .leftJoinAndSelect('events.host', 'host')
+          .leftJoinAndSelect('events.attendees', 'attendees')
           .take(limit)
           .skip(offset)
           .where('hires.organization.id = :id', { id: orgId })
@@ -72,6 +76,8 @@ export class EventsService {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
+          .leftJoinAndSelect('events.host', 'host')
+          .leftJoinAndSelect('events.attendees', 'attendees')
           .take(limit)
           .skip(offset)
           .getMany();
@@ -80,6 +86,8 @@ export class EventsService {
       events = await this.eventsRepository
         .createQueryBuilder('events')
         .leftJoinAndSelect('events.image', 'image')
+        .leftJoinAndSelect('events.host', 'host')
+        .leftJoinAndSelect('events.attendees', 'attendees')
         .getMany();
     }
     globalThis.Logger.log({

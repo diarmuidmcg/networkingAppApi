@@ -1,5 +1,12 @@
 import { BaseEntity } from 'src/BaseEntity';
-import { Entity, Column, OneToMany, ManyToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
+} from 'typeorm';
 import { Image } from 'src/images/image.entity';
 import { Events } from 'src/events/events.entity';
 @Entity('users')
@@ -42,6 +49,6 @@ export class Users extends BaseEntity {
   @ManyToMany(() => Events, (event) => event.attendees, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
+  @JoinTable()
   attended_events: Events[];
 }

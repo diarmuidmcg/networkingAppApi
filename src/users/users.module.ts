@@ -8,8 +8,10 @@ import { Image } from 'src/images/image.entity';
 import { ImagesService } from 'src/images/images.service';
 import { ImagesModule } from 'src/images/images.module';
 
+import { Events } from 'src/events/events.entity';
+
 @Module({
-  imports: [ImagesModule, TypeOrmModule.forFeature([Users, Image])],
+  imports: [ImagesModule, TypeOrmModule.forFeature([Users, Image, Events])],
   controllers: [UsersController],
   providers: [UsersService, ImagesService],
   exports: [UsersService],
