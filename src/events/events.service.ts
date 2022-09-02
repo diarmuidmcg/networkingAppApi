@@ -58,28 +58,61 @@ export class EventsService {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
-          .leftJoinAndSelect('events.host', 'host')
-          .leftJoinAndSelect('events.attendees', 'attendees')
+          .leftJoin('events.host', 'host')
+          .leftJoin('events.attendees', 'attendees')
+          .select([
+            'events',
+            'host.id',
+            'host.first_name',
+            'host.linkedin_username',
+            'host.occupation',
+            'attendees.id',
+            'attendees.first_name',
+            'attendees.linkedin_username',
+            'attendees.occupation',
+          ])
           .take(limit)
           .skip(offset)
-          .where('hires.host.id = :id', { id: hostId })
+          .where('events.host.id = :id', { id: hostId })
           .getMany();
       } else if (orgId != undefined) {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
-          .leftJoinAndSelect('events.host', 'host')
-          .leftJoinAndSelect('events.attendees', 'attendees')
+          .leftJoin('events.host', 'host')
+          .leftJoin('events.attendees', 'attendees')
+          .select([
+            'events',
+            'host.id',
+            'host.first_name',
+            'host.linkedin_username',
+            'host.occupation',
+            'attendees.id',
+            'attendees.first_name',
+            'attendees.linkedin_username',
+            'attendees.occupation',
+          ])
           .take(limit)
           .skip(offset)
-          .where('hires.organization.id = :id', { id: orgId })
+          .where('events.organization.id = :id', { id: orgId })
           .getMany();
       } else {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
-          .leftJoinAndSelect('events.host', 'host')
-          .leftJoinAndSelect('events.attendees', 'attendees')
+          .leftJoin('events.host', 'host')
+          .leftJoin('events.attendees', 'attendees')
+          .select([
+            'events',
+            'host.id',
+            'host.first_name',
+            'host.linkedin_username',
+            'host.occupation',
+            'attendees.id',
+            'attendees.first_name',
+            'attendees.linkedin_username',
+            'attendees.occupation',
+          ])
           .take(limit)
           .skip(offset)
           .getMany();
@@ -88,8 +121,19 @@ export class EventsService {
       events = await this.eventsRepository
         .createQueryBuilder('events')
         .leftJoinAndSelect('events.image', 'image')
-        .leftJoinAndSelect('events.host', 'host')
-        .leftJoinAndSelect('events.attendees', 'attendees')
+        .leftJoin('events.host', 'host')
+        .leftJoin('events.attendees', 'attendees')
+        .select([
+          'events',
+          'host.id',
+          'host.first_name',
+          'host.linkedin_username',
+          'host.occupation',
+          'attendees.id',
+          'attendees.first_name',
+          'attendees.linkedin_username',
+          'attendees.occupation',
+        ])
         .getMany();
     }
     globalThis.Logger.log({
@@ -105,6 +149,19 @@ export class EventsService {
     const event = await this.eventsRepository
       .createQueryBuilder('events')
       .leftJoinAndSelect('events.image', 'image')
+      .leftJoin('events.host', 'host')
+      .leftJoin('events.attendees', 'attendees')
+      .select([
+        'events',
+        'host.id',
+        'host.first_name',
+        'host.linkedin_username',
+        'host.occupation',
+        'attendees.id',
+        'attendees.first_name',
+        'attendees.linkedin_username',
+        'attendees.occupation',
+      ])
       .where('events.id = :id', { id })
       .getOne();
     globalThis.Logger.log({
@@ -197,6 +254,19 @@ export class EventsService {
     let currentEvent = await this.eventsRepository
       .createQueryBuilder('events')
       .leftJoinAndSelect('events.image', 'image')
+      .leftJoin('events.host', 'host')
+      .leftJoin('events.attendees', 'attendees')
+      .select([
+        'events',
+        'host.id',
+        'host.first_name',
+        'host.linkedin_username',
+        'host.occupation',
+        'attendees.id',
+        'attendees.first_name',
+        'attendees.linkedin_username',
+        'attendees.occupation',
+      ])
       .where('events.id = :id', { id })
       .getOne();
     // make sure upcycler exists
