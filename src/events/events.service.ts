@@ -75,28 +75,30 @@ export class EventsService {
           .skip(offset)
           .where('events.host.id = :id', { id: hostId })
           .getMany();
-      } else if (orgId != undefined) {
-        events = await this.eventsRepository
-          .createQueryBuilder('events')
-          .leftJoinAndSelect('events.image', 'image')
-          .leftJoin('events.host', 'host')
-          .leftJoin('events.attendees', 'attendees')
-          .select([
-            'events',
-            'host.id',
-            'host.first_name',
-            'host.linkedin_username',
-            'host.occupation',
-            'attendees.id',
-            'attendees.first_name',
-            'attendees.linkedin_username',
-            'attendees.occupation',
-          ])
-          .take(limit)
-          .skip(offset)
-          .where('events.organization.id = :id', { id: orgId })
-          .getMany();
-      } else {
+      }
+      // else if (orgId != undefined) {
+      //   events = await this.eventsRepository
+      //     .createQueryBuilder('events')
+      //     .leftJoinAndSelect('events.image', 'image')
+      //     .leftJoin('events.host', 'host')
+      //     .leftJoin('events.attendees', 'attendees')
+      //     .select([
+      //       'events',
+      //       'host.id',
+      //       'host.first_name',
+      //       'host.linkedin_username',
+      //       'host.occupation',
+      //       'attendees.id',
+      //       'attendees.first_name',
+      //       'attendees.linkedin_username',
+      //       'attendees.occupation',
+      //     ])
+      //     .take(limit)
+      //     .skip(offset)
+      //     .where('events.organization.id = :id', { id: orgId })
+      //     .getMany();
+      // }
+      else {
         events = await this.eventsRepository
           .createQueryBuilder('events')
           .leftJoinAndSelect('events.image', 'image')
