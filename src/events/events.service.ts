@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Events } from './events.entity';
 
 import { ImagesService } from 'src/images/images.service';
+import { Users } from 'src/users/users.entity';
 
 const validateDate = (date) => {
   // return date.match(
@@ -41,6 +42,7 @@ const validateTime = (time) => {
 export class EventsService {
   constructor(
     @InjectRepository(Events) private eventsRepository: Repository<Events>,
+    @InjectRepository(Users) private usersRepository: Repository<Users>,
     private readonly imageService: ImagesService,
   ) {}
 
@@ -113,13 +115,15 @@ export class EventsService {
   }
 
   public async createEvent(files, request, response): Promise<Events[]> {
-    const { title, location, date, time, price, description } = request.body;
+    const { title, location, date, time, price, description, hostId } =
+      request.body;
 
     // type check all NOT Nullable
     let mustInclude = [];
     if (!title) mustInclude.push('title');
     if (!location) mustInclude.push('location');
     if (!date) mustInclude.push('date');
+    if (!hostId) mustInclude.push('hostId');
     // only run the validate functions if date exists
     else {
       // type check date and time
@@ -162,6 +166,7 @@ export class EventsService {
     newEvent.date = date !== null ? date : '';
     newEvent.time = time !== null ? time : '';
     newEvent.price = price !== null ? price : '';
+    newEvent.host = hostId;
     newEvent.description = description !== null ? description : '';
 
     globalThis.Logger.log({ level: 'info', message: 'New Event' });
@@ -183,9 +188,23 @@ export class EventsService {
     // // }
   }
 
-  public async updateEvent(files, request, response): Promise<Events[]> {
-    const { title, location, date, time, price, description } = request.body;
+  public async updateEvent(files, request, response) {
+    const { title, location, date, time, price, description, attendee } =
+      request.body;
     const { id } = request.params;
+
+    // fetch current profile from db
+    let currentEvent = await this.eventsRepository
+      .createQueryBuilder('events')
+      .leftJoinAndSelect('events.image', 'image')
+      .where('events.id = :id', { id })
+      .getOne();
+    // make sure upcycler exists
+    if (currentEvent == undefined)
+      return response
+        .status(400)
+        .json({ error: 'this eventId does not exist' });
+
     const updatedEvent = new Events();
 
     // type check all NOT Nullable
@@ -222,6 +241,25 @@ export class EventsService {
     if (price != undefined) updatedEvent.price = price;
     if (description != undefined) updatedEvent.description = description;
 
+    const newAttendees = [];
+    // attendees must be an array
+    if (attendee != undefined) {
+      const user = await this.usersRepository
+        .createQueryBuilder('users')
+        .where('users.id = :attendee', { attendee })
+        .getOne();
+
+      // make sure user exists
+      if (user == undefined || user == null)
+        return response.status(400).json({
+          error: `this attendee (user id ${attendee}) does not exist`,
+        });
+
+      newAttendees.push(user);
+      console.log('new attendee is ' + user);
+      updatedEvent.attendees = newAttendees;
+    }
+
     if (mustInclude.length > 0)
       return response.status(400).json({
         error:
@@ -235,16 +273,20 @@ export class EventsService {
       message: JSON.stringify(updatedEvent),
     });
 
-    const data = await this.eventsRepository.update({ id }, updatedEvent);
-    const event = await this.eventsRepository
-      .createQueryBuilder('events')
-      .where('events.id = :id', { id })
-      .getOne();
+    currentEvent;
+    // merge new info into existing hire
+    // ** we need to merge instead of usual keyword 'update'
+    // because of images (oneToMany external relationship)
+    // this case is not supported by the keyword 'update'
+    this.eventsRepository.merge(currentEvent, updatedEvent);
+    // save it
+    const data = await this.eventsRepository.save(currentEvent);
+
     globalThis.Logger.log({
       level: 'info',
       message: 'Updated Event Response ' + JSON.stringify(data),
     });
-    return response.status(200).json(event);
+    return response.status(200).json(currentEvent);
   }
 
   async deleteEvent(request, response): Promise<Events[]> {

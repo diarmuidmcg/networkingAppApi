@@ -45,6 +45,12 @@ export class Events extends BaseEntity {
   @ManyToMany(() => Users, (user) => user.attended_events, {
     onDelete: 'CASCADE',
   })
-  @JoinTable()
+  @JoinTable({
+    name: 'event_attendees', // table name for the junction table of this relation
+    joinColumn: {
+      name: 'event',
+      referencedColumnName: 'id',
+    },
+  })
   attendees: Users[];
 }

@@ -49,6 +49,5 @@ export class Users extends BaseEntity {
   @ManyToMany(() => Events, (event) => event.attendees, {
     onDelete: 'CASCADE',
   })
-  @JoinTable()
   attended_events: Events[];
 }
