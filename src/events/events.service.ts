@@ -332,20 +332,12 @@ export class EventsService {
       updatedEvent.attendees = newAttendees;
     }
 
-    if (mustInclude.length > 0)
-      return response.status(400).json({
-        error:
-          'These were the issues with your BODY parameters: ' +
-          JSON.stringify(mustInclude),
-      });
-
     globalThis.Logger.log({ level: 'info', message: 'Update Event' });
     globalThis.Logger.log({
       level: 'info',
       message: JSON.stringify(updatedEvent),
     });
 
-    currentEvent;
     // merge new info into existing hire
     // ** we need to merge instead of usual keyword 'update'
     // because of images (oneToMany external relationship)

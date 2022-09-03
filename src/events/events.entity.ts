@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { Image } from 'src/images/image.entity';
 import { Users } from 'src/users/users.entity';
+import { Organizations } from 'src/organizations/organizations.entity';
+
 @Entity('events')
 export class Events extends BaseEntity {
   @Column({ type: 'varchar', length: 150, nullable: false })
@@ -53,4 +55,10 @@ export class Events extends BaseEntity {
     },
   })
   attendees: Users[];
+
+  @ManyToOne(() => Organizations, (org) => org.hosted_events, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  organization: Organizations;
 }

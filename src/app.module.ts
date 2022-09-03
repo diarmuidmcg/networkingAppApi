@@ -22,6 +22,11 @@ import { EventsModule } from './events/events.module';
 import { EventsService } from './events/events.service';
 import { EventsController } from './events/events.controller';
 
+import { Organizations } from './organizations/organizations.entity';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { OrganizationsService } from './organizations/organizations.service';
+import { OrganizationsController } from './organizations/organizations.controller';
+
 import { ImagesController } from './images/images.controller';
 import { ImagesModule } from './images/images.module';
 
@@ -31,15 +36,18 @@ import { ImagesModule } from './images/images.module';
     WinstonModule.forRoot(logger.console()),
     UsersModule,
     EventsModule,
+    OrganizationsModule,
     ImagesModule,
-    TypeOrmModule.forFeature([Users, Events]),
+
+    TypeOrmModule.forFeature([Users, Events, Organizations]),
   ],
   controllers: [
     AppController,
     UsersController,
     EventsController,
     ImagesController,
+    OrganizationsController,
   ],
-  providers: [AppService, UsersService, EventsService],
+  providers: [AppService, UsersService, EventsService, OrganizationsService],
 })
 export class AppModule {}

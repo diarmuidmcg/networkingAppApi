@@ -4,11 +4,13 @@ import {
   Column,
   OneToMany,
   ManyToMany,
+  ManyToOne,
   JoinColumn,
   JoinTable,
 } from 'typeorm';
 import { Image } from 'src/images/image.entity';
 import { Events } from 'src/events/events.entity';
+import { Organizations } from 'src/organizations/organizations.entity';
 @Entity('users')
 export class Users extends BaseEntity {
   // separated these out incase we want to only diplay first name at some stage
@@ -50,4 +52,10 @@ export class Users extends BaseEntity {
     onDelete: 'CASCADE',
   })
   attended_events: Events[];
+
+  @ManyToOne(() => Organizations, (org) => org.admins, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  organization: Organizations;
 }

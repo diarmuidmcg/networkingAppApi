@@ -9,9 +9,13 @@ import { ImagesService } from 'src/images/images.service';
 import { ImagesModule } from 'src/images/images.module';
 
 import { Events } from 'src/events/events.entity';
+import { Organizations } from 'src/organizations/organizations.entity';
 
 @Module({
-  imports: [ImagesModule, TypeOrmModule.forFeature([Users, Image, Events])],
+  imports: [
+    ImagesModule,
+    TypeOrmModule.forFeature([Users, Image, Events, Organizations]),
+  ],
   controllers: [UsersController],
   providers: [UsersService, ImagesService],
   exports: [UsersService],
