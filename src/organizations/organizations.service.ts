@@ -27,44 +27,44 @@ export class OrganizationsService {
     let organizations;
 
     if (offset != undefined && limit != undefined) {
-      if (admin_id != undefined) {
-        organizations = await this.organizationsRepository
-          .createQueryBuilder('organizations')
-          .leftJoin('organizations.image', 'image')
-          .leftJoin('organizations.hosted_events', 'hosted_events')
-          .leftJoin('organizations.admins', 'admins')
-          .select([
-            'organizations',
-            'image',
-            'hosted_events',
-            'admins.id',
-            'admins.first_name',
-            'admins.linkedin_username',
-            'admins.occupation',
-          ])
-          .take(limit)
-          .skip(offset)
-          .where('organizations.admin.id = :id', { id: admin_id })
-          .getMany();
-      } else {
-        organizations = await this.organizationsRepository
-          .createQueryBuilder('organizations')
-          .leftJoin('organizations.image', 'image')
-          .leftJoin('organizations.hosted_events', 'hosted_events')
-          .leftJoin('organizations.admins', 'admins')
-          .select([
-            'organizations',
-            'image',
-            'hosted_events',
-            'admins.id',
-            'admins.first_name',
-            'admins.linkedin_username',
-            'admins.occupation',
-          ])
-          .take(limit)
-          .skip(offset)
-          .getMany();
-      }
+      // if (admin_id != undefined) {
+      //   organizations = await this.organizationsRepository
+      //     .createQueryBuilder('organizations')
+      //     .leftJoin('organizations.image', 'image')
+      //     .leftJoin('organizations.hosted_events', 'hosted_events')
+      //     .leftJoin('organizations.admins', 'admins')
+      //     .select([
+      //       'organizations',
+      //       'image',
+      //       'hosted_events',
+      //       'admins.id',
+      //       'admins.first_name',
+      //       'admins.linkedin_username',
+      //       'admins.occupation',
+      //     ])
+      //     .take(limit)
+      //     .skip(offset)
+      //     .where('organizations.admins.id = :id', { id: admin_id })
+      //     .getMany();
+      // } else {
+      organizations = await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .leftJoin('organizations.image', 'image')
+        .leftJoin('organizations.hosted_events', 'hosted_events')
+        .leftJoin('organizations.admins', 'admins')
+        .select([
+          'organizations',
+          'image',
+          'hosted_events',
+          'admins.id',
+          'admins.first_name',
+          'admins.linkedin_username',
+          'admins.occupation',
+        ])
+        .take(limit)
+        .skip(offset)
+        .getMany();
+      // }
     } else {
       organizations = await this.organizationsRepository
         .createQueryBuilder('organizations')

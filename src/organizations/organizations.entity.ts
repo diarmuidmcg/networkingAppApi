@@ -31,6 +31,7 @@ export class Organizations extends BaseEntity {
   @OneToMany(() => Users, (user) => user.organization, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   admins: Users[];
 
   @OneToMany(() => Events, (event) => event.organization, {
