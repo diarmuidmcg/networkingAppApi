@@ -30,11 +30,13 @@ export class OrganizationsService {
       if (admin_id != undefined) {
         organizations = await this.organizationsRepository
           .createQueryBuilder('organizations')
-          .leftJoinAndSelect('organizations.image', 'image')
-          .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+          .leftJoin('organizations.image', 'image')
+          .leftJoin('organizations.hosted_events', 'hosted_events')
           .leftJoin('organizations.admins', 'admins')
           .select([
             'organizations',
+            'image',
+            'hosted_events',
             'admins.id',
             'admins.first_name',
             'admins.linkedin_username',
@@ -47,11 +49,13 @@ export class OrganizationsService {
       } else {
         organizations = await this.organizationsRepository
           .createQueryBuilder('organizations')
-          .leftJoinAndSelect('organizations.image', 'image')
-          .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+          .leftJoin('organizations.image', 'image')
+          .leftJoin('organizations.hosted_events', 'hosted_events')
           .leftJoin('organizations.admins', 'admins')
           .select([
             'organizations',
+            'image',
+            'hosted_events',
             'admins.id',
             'admins.first_name',
             'admins.linkedin_username',
@@ -64,11 +68,13 @@ export class OrganizationsService {
     } else {
       organizations = await this.organizationsRepository
         .createQueryBuilder('organizations')
-        .leftJoinAndSelect('organizations.image', 'image')
-        .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+        .leftJoin('organizations.image', 'image')
+        .leftJoin('organizations.hosted_events', 'hosted_events')
         .leftJoin('organizations.admins', 'admins')
         .select([
           'organizations',
+          'image',
+          'hosted_events',
           'admins.id',
           'admins.first_name',
           'admins.linkedin_username',
@@ -88,11 +94,13 @@ export class OrganizationsService {
     globalThis.Logger.log({ level: 'info', message: 'Get organization ' + id });
     const organization = await this.organizationsRepository
       .createQueryBuilder('organizations')
-      .leftJoinAndSelect('organizations.image', 'image')
-      .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+      .leftJoin('organizations.image', 'image')
+      .leftJoin('organizations.hosted_events', 'hosted_events')
       .leftJoin('organizations.admins', 'admins')
       .select([
         'organizations',
+        'image',
+        'hosted_events',
         'admins.id',
         'admins.first_name',
         'admins.linkedin_username',
@@ -112,14 +120,14 @@ export class OrganizationsService {
     request,
     response,
   ): Promise<Organizations[]> {
-    const { name, location, description, initialAdmin } = request.body;
+    const { name, location, description, initial_admin } = request.body;
 
     // type check all NOT Nullable
     let mustInclude = [];
     if (!name) mustInclude.push('title');
     if (!location) mustInclude.push('location');
 
-    if (!initialAdmin) mustInclude.push('hostId');
+    if (!initial_admin) mustInclude.push('initial_admin');
 
     if (mustInclude.length > 0)
       return response.status(400).json({
@@ -146,8 +154,24 @@ export class OrganizationsService {
 
     newOrganization.name = name !== null ? name : '';
     newOrganization.location = location !== null ? location : '';
-    // newOrganization.admins.push(admins);
     newOrganization.description = description !== null ? description : '';
+
+    // for setting admin
+    const newAdmin = [];
+    const user = await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.id = :initial_admin', { initial_admin })
+      .getOne();
+
+    // make sure user exists
+    if (user == undefined || user == null)
+      return response.status(400).json({
+        error: `this admin (user id ${initial_admin}) does not exist`,
+      });
+
+    newAdmin.push(user);
+    console.log('new admin is ' + user);
+    newOrganization.admins = newAdmin;
 
     globalThis.Logger.log({ level: 'info', message: 'New Organization' });
     globalThis.Logger.log({
@@ -219,7 +243,6 @@ export class OrganizationsService {
     if (description != undefined) updatedOrganization.description = description;
 
     const newAdmin = [];
-    // attendees must be an array
     if (new_admin != undefined) {
       const user = await this.usersRepository
         .createQueryBuilder('users')

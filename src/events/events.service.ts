@@ -57,11 +57,12 @@ export class EventsService {
       if (hostId != undefined) {
         events = await this.eventsRepository
           .createQueryBuilder('events')
-          .leftJoinAndSelect('events.image', 'image')
+          .leftJoin('events.image', 'image')
           .leftJoin('events.host', 'host')
           .leftJoin('events.attendees', 'attendees')
           .select([
             'events',
+            'image',
             'host.id',
             'host.first_name',
             'host.linkedin_username',
@@ -101,11 +102,12 @@ export class EventsService {
       else {
         events = await this.eventsRepository
           .createQueryBuilder('events')
-          .leftJoinAndSelect('events.image', 'image')
+          .leftJoin('events.image', 'image')
           .leftJoin('events.host', 'host')
           .leftJoin('events.attendees', 'attendees')
           .select([
             'events',
+            'image',
             'host.id',
             'host.first_name',
             'host.linkedin_username',
@@ -122,11 +124,12 @@ export class EventsService {
     } else {
       events = await this.eventsRepository
         .createQueryBuilder('events')
-        .leftJoinAndSelect('events.image', 'image')
+        .leftJoin('events.image', 'image')
         .leftJoin('events.host', 'host')
         .leftJoin('events.attendees', 'attendees')
         .select([
           'events',
+          'image',
           'host.id',
           'host.first_name',
           'host.linkedin_username',
@@ -150,11 +153,12 @@ export class EventsService {
     globalThis.Logger.log({ level: 'info', message: 'Get event ' + id });
     const event = await this.eventsRepository
       .createQueryBuilder('events')
-      .leftJoinAndSelect('events.image', 'image')
+      .leftJoin('events.image', 'image')
       .leftJoin('events.host', 'host')
       .leftJoin('events.attendees', 'attendees')
       .select([
         'events',
+        'image',
         'host.id',
         'host.first_name',
         'host.linkedin_username',
@@ -255,11 +259,12 @@ export class EventsService {
     // fetch current profile from db
     let currentEvent = await this.eventsRepository
       .createQueryBuilder('events')
-      .leftJoinAndSelect('events.image', 'image')
+      .leftJoin('events.image', 'image')
       .leftJoin('events.host', 'host')
       .leftJoin('events.attendees', 'attendees')
       .select([
         'events',
+        'image',
         'host.id',
         'host.first_name',
         'host.linkedin_username',
