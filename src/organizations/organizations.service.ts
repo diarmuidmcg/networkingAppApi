@@ -21,72 +21,41 @@ export class OrganizationsService {
 
   async getOrganizations(request, response): Promise<Organizations[]> {
     // if query param 'hostId' or 'orgId' is passed in, just get related ones
-    const { offset, limit, hostId, orgId } = request.query;
+    const { offset, limit, admin_id } = request.query;
     globalThis.Logger.log({ level: 'info', message: 'Get organizations ' });
 
     let organizations;
 
     if (offset != undefined && limit != undefined) {
-      if (hostId != undefined) {
+      if (admin_id != undefined) {
         organizations = await this.organizationsRepository
           .createQueryBuilder('organizations')
           .leftJoinAndSelect('organizations.image', 'image')
-          .leftJoin('organizations.host', 'host')
-          .leftJoin('organizations.attendees', 'attendees')
+          .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+          .leftJoin('organizations.admins', 'admins')
           .select([
             'organizations',
-            'host.id',
-            'host.first_name',
-            'host.linkedin_username',
-            'host.occupation',
-            'attendees.id',
-            'attendees.first_name',
-            'attendees.linkedin_username',
-            'attendees.occupation',
+            'admins.id',
+            'admins.first_name',
+            'admins.linkedin_username',
+            'admins.occupation',
           ])
           .take(limit)
           .skip(offset)
-          .where('organizations.host.id = :id', { id: hostId })
+          .where('organizations.admin.id = :id', { id: admin_id })
           .getMany();
-      }
-      // else if (orgId != undefined) {
-      //   organizations = await this.organizationsRepository
-      //     .createQueryBuilder('organizations')
-      //     .leftJoinAndSelect('organizations.image', 'image')
-      //     .leftJoin('organizations.host', 'host')
-      //     .leftJoin('organizations.attendees', 'attendees')
-      //     .select([
-      //       'organizations',
-      //       'host.id',
-      //       'host.first_name',
-      //       'host.linkedin_username',
-      //       'host.occupation',
-      //       'attendees.id',
-      //       'attendees.first_name',
-      //       'attendees.linkedin_username',
-      //       'attendees.occupation',
-      //     ])
-      //     .take(limit)
-      //     .skip(offset)
-      //     .where('organizations.organization.id = :id', { id: orgId })
-      //     .getMany();
-      // }
-      else {
+      } else {
         organizations = await this.organizationsRepository
           .createQueryBuilder('organizations')
           .leftJoinAndSelect('organizations.image', 'image')
-          .leftJoin('organizations.host', 'host')
-          .leftJoin('organizations.attendees', 'attendees')
+          .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+          .leftJoin('organizations.admins', 'admins')
           .select([
             'organizations',
-            'host.id',
-            'host.first_name',
-            'host.linkedin_username',
-            'host.occupation',
-            'attendees.id',
-            'attendees.first_name',
-            'attendees.linkedin_username',
-            'attendees.occupation',
+            'admins.id',
+            'admins.first_name',
+            'admins.linkedin_username',
+            'admins.occupation',
           ])
           .take(limit)
           .skip(offset)
@@ -96,18 +65,14 @@ export class OrganizationsService {
       organizations = await this.organizationsRepository
         .createQueryBuilder('organizations')
         .leftJoinAndSelect('organizations.image', 'image')
-        .leftJoin('organizations.host', 'host')
-        .leftJoin('organizations.attendees', 'attendees')
+        .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+        .leftJoin('organizations.admins', 'admins')
         .select([
           'organizations',
-          'host.id',
-          'host.first_name',
-          'host.linkedin_username',
-          'host.occupation',
-          'attendees.id',
-          'attendees.first_name',
-          'attendees.linkedin_username',
-          'attendees.occupation',
+          'admins.id',
+          'admins.first_name',
+          'admins.linkedin_username',
+          'admins.occupation',
         ])
         .getMany();
     }
@@ -124,18 +89,14 @@ export class OrganizationsService {
     const organization = await this.organizationsRepository
       .createQueryBuilder('organizations')
       .leftJoinAndSelect('organizations.image', 'image')
-      .leftJoin('organizations.host', 'host')
-      .leftJoin('organizations.attendees', 'attendees')
+      .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+      .leftJoin('organizations.admins', 'admins')
       .select([
         'organizations',
-        'host.id',
-        'host.first_name',
-        'host.linkedin_username',
-        'host.occupation',
-        'attendees.id',
-        'attendees.first_name',
-        'attendees.linkedin_username',
-        'attendees.occupation',
+        'admins.id',
+        'admins.first_name',
+        'admins.linkedin_username',
+        'admins.occupation',
       ])
       .where('organizations.id = :id', { id })
       .getOne();
@@ -218,18 +179,14 @@ export class OrganizationsService {
     let currentOrganization = await this.organizationsRepository
       .createQueryBuilder('organizations')
       .leftJoinAndSelect('organizations.image', 'image')
-      .leftJoin('organizations.host', 'host')
-      .leftJoin('organizations.attendees', 'attendees')
+      .leftJoinAndSelect('organizations.hosted_events', 'hosted_events')
+      .leftJoin('organizations.admins', 'admins')
       .select([
         'organizations',
-        'host.id',
-        'host.first_name',
-        'host.linkedin_username',
-        'host.occupation',
-        'attendees.id',
-        'attendees.first_name',
-        'attendees.linkedin_username',
-        'attendees.occupation',
+        'admins.id',
+        'admins.first_name',
+        'admins.linkedin_username',
+        'admins.occupation',
       ])
       .where('organizations.id = :id', { id })
       .getOne();
