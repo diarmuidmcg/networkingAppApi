@@ -11,10 +11,14 @@ const validateEmail = (email) => {
   );
 };
 
+import { Organizations } from 'src/organizations/organizations.entity';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users) private usersRepository: Repository<Users>,
+    @InjectRepository(Organizations)
+    private organizationsRepository: Repository<Organizations>,
   ) {}
 
   async getUsers(request, response): Promise<Users[]> {
@@ -52,6 +56,7 @@ export class UsersService {
       occupation,
       linkedin_username,
       instagram_username,
+      orgId,
     } = request.body;
 
     // type check all NOT Nullable
@@ -78,6 +83,22 @@ export class UsersService {
       linkedin_username !== null ? linkedin_username : '';
     newUser.instagram_username =
       instagram_username !== null ? instagram_username : '';
+
+    // set org
+    if (orgId != undefined) {
+      const organization = await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .where('organizations.id = :orgId', { orgId })
+        .getOne();
+
+      // make sure org exists
+      if (organization == undefined || organization == null)
+        return response.status(400).json({
+          error: `this organization (id ${orgId}) does not exist`,
+        });
+
+      newUser.organization = organization;
+    }
 
     globalThis.Logger.log({ level: 'info', message: 'New User' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newUser) });
@@ -107,8 +128,20 @@ export class UsersService {
       occupation,
       linkedin_username,
       instagram_username,
+      orgId,
     } = request.body;
     const { id } = request.params;
+
+    const currentUser = await this.usersRepository
+      .createQueryBuilder('users')
+      .leftJoinAndSelect('users.organization', 'organization')
+      .where('users.id = :id', { id })
+      .getOne();
+
+    // make sure upcycler exists
+    if (currentUser == undefined)
+      return response.status(400).json({ error: 'this userId does not exist' });
+
     const updatedUser = new Users();
 
     // type check all NOT Nullable
@@ -121,6 +154,13 @@ export class UsersService {
         mustInclude.push('email must be proper format');
       updatedUser.email = email;
     }
+    // for returning improper email format
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'You must include these BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
 
     if (phone_number != undefined) updatedUser.phone_number = phone_number;
     if (occupation != undefined) updatedUser.occupation = occupation;
@@ -129,12 +169,21 @@ export class UsersService {
     if (instagram_username != undefined)
       updatedUser.instagram_username = instagram_username;
 
-    if (mustInclude.length > 0)
-      return response.status(400).json({
-        error:
-          'These were the issues with your BODY parameters: ' +
-          JSON.stringify(mustInclude),
-      });
+    // set org
+    if (orgId != undefined) {
+      const organization = await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .where('organizations.id = :orgId', { orgId })
+        .getOne();
+
+      // make sure org exists
+      if (organization == undefined || organization == null)
+        return response.status(400).json({
+          error: `this organization (id ${orgId}) does not exist`,
+        });
+
+      updatedUser.organization = organization;
+    }
 
     globalThis.Logger.log({ level: 'info', message: 'Update User' });
     globalThis.Logger.log({
@@ -142,16 +191,19 @@ export class UsersService {
       message: JSON.stringify(updatedUser),
     });
 
-    const data = await this.usersRepository.update({ id }, updatedUser);
-    const user = await this.usersRepository
-      .createQueryBuilder('users')
-      .where('users.id = :id', { id })
-      .getOne();
+    // merge new info into existing hire
+    // ** we need to merge instead of usual keyword 'update'
+    // because of images (oneToMany external relationship)
+    // this case is not supported by the keyword 'update'
+    this.usersRepository.merge(currentUser, updatedUser);
+    // save it
+    const data = await this.usersRepository.save(currentUser);
+
     globalThis.Logger.log({
       level: 'info',
-      message: 'Updated User Response ' + JSON.stringify(data),
+      message: 'Updated User Response ' + JSON.stringify(currentUser),
     });
-    return response.status(200).json(user);
+    return response.status(200).json(currentUser);
   }
 
   async deleteUser(request, response): Promise<Users[]> {

@@ -320,6 +320,14 @@ export class EventsService {
       updatedEvent.time = time;
     }
 
+    // for returning improper time or date
+    if (mustInclude.length > 0)
+      return response.status(400).json({
+        error:
+          'You must include these BODY parameters: ' +
+          JSON.stringify(mustInclude),
+      });
+
     // image upload
     const uploadImages = [];
     if (files) {
@@ -388,7 +396,7 @@ export class EventsService {
 
     globalThis.Logger.log({
       level: 'info',
-      message: 'Updated Event Response ' + JSON.stringify(data),
+      message: 'Updated Event Response ' + JSON.stringify(currentEvent),
     });
     return response.status(200).json(currentEvent);
   }
