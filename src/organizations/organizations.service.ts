@@ -255,6 +255,10 @@ export class OrganizationsService {
           error: `this admin (user id ${new_admin}) does not exist`,
         });
 
+      // if  the org already has admins, get them & just push new one
+      if (currentOrganization.admins != null)
+        newAttendees = currentOrganization.admins;
+
       newAdmin.push(user);
       console.log('new attendee is ' + user);
       updatedOrganization.admins = newAdmin;

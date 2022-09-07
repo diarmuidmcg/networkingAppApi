@@ -361,7 +361,7 @@ export class EventsService {
       updatedEvent.organization = organization;
     }
 
-    const newAttendees = [];
+    let newAttendees = [];
     // attendees must be an array
     if (attendee != undefined) {
       const user = await this.usersRepository
@@ -374,6 +374,8 @@ export class EventsService {
         return response.status(400).json({
           error: `this attendee (user id ${attendee}) does not exist`,
         });
+      // if  the event already has attendees, get them & just push new one
+      if (currentEvent.attendees != null) newAttendees = currentEvent.attendees;
 
       newAttendees.push(user);
       console.log('new attendee is ' + user);
