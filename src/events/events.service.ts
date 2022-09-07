@@ -9,6 +9,7 @@ import { Events } from './events.entity';
 
 import { ImagesService } from 'src/images/images.service';
 import { Users } from 'src/users/users.entity';
+import { Organizations } from 'src/organizations/organizations.entity';
 
 const validateDate = (date) => {
   // return date.match(
@@ -43,6 +44,8 @@ export class EventsService {
   constructor(
     @InjectRepository(Events) private eventsRepository: Repository<Events>,
     @InjectRepository(Users) private usersRepository: Repository<Users>,
+    @InjectRepository(Organizations)
+    private organizationsRepository: Repository<Organizations>,
     private readonly imageService: ImagesService,
   ) {}
 
@@ -178,7 +181,7 @@ export class EventsService {
   }
 
   public async createEvent(files, request, response): Promise<Events[]> {
-    const { title, location, date, time, price, description, hostId } =
+    const { title, location, date, time, price, description, hostId, orgId } =
       request.body;
 
     // type check all NOT Nullable
@@ -232,6 +235,22 @@ export class EventsService {
     newEvent.host = hostId;
     newEvent.description = description !== null ? description : '';
 
+    // set org
+    if (orgId != undefined) {
+      const organization = await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .where('organizations.id = :orgId', { orgId })
+        .getOne();
+
+      // make sure org exists
+      if (organization == undefined || organization == null)
+        return response.status(400).json({
+          error: `this organization (id ${orgId}) does not exist`,
+        });
+
+      newEvent.organization = organization;
+    }
+
     globalThis.Logger.log({ level: 'info', message: 'New Event' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newEvent) });
 
@@ -252,7 +271,7 @@ export class EventsService {
   }
 
   public async updateEvent(files, request, response) {
-    const { title, location, date, time, price, description, attendee } =
+    const { title, location, date, time, price, description, attendee, orgId } =
       request.body;
     const { id } = request.params;
 
@@ -317,6 +336,22 @@ export class EventsService {
 
     if (price != undefined) updatedEvent.price = price;
     if (description != undefined) updatedEvent.description = description;
+
+    // set org
+    if (orgId != undefined) {
+      const organization = await this.organizationsRepository
+        .createQueryBuilder('organizations')
+        .where('organizations.id = :orgId', { orgId })
+        .getOne();
+
+      // make sure org exists
+      if (organization == undefined || organization == null)
+        return response.status(400).json({
+          error: `this organization (id ${orgId}) does not exist`,
+        });
+
+      updatedEvent.organization = organization;
+    }
 
     const newAttendees = [];
     // attendees must be an array
