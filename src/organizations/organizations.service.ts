@@ -242,7 +242,7 @@ export class OrganizationsService {
 
     if (description != undefined) updatedOrganization.description = description;
 
-    const newAdmin = [];
+    let newAdmin = [];
     if (new_admin != undefined) {
       const user = await this.usersRepository
         .createQueryBuilder('users')
@@ -257,7 +257,7 @@ export class OrganizationsService {
 
       // if  the org already has admins, get them & just push new one
       if (currentOrganization.admins != null)
-        newAttendees = currentOrganization.admins;
+        newAdmin = currentOrganization.admins;
 
       newAdmin.push(user);
       console.log('new attendee is ' + user);
