@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { Users } from './users.entity';
+import { ProfilesController } from './profiles.controller';
+import { ProfilesService } from './profiles.service';
+import { Profiles } from './profiles.entity';
 
 import { Image } from 'src/images/image.entity';
 import { ImagesService } from 'src/images/images.service';
@@ -14,10 +14,10 @@ import { Organizations } from 'src/organizations/organizations.entity';
 @Module({
   imports: [
     ImagesModule,
-    TypeOrmModule.forFeature([Users, Image, Events, Organizations]),
+    TypeOrmModule.forFeature([Profiles, Image, Events, Organizations]),
   ],
-  controllers: [UsersController],
-  providers: [UsersService, ImagesService],
-  exports: [UsersService],
+  controllers: [ProfilesController],
+  providers: [ProfilesService, ImagesService],
+  exports: [ProfilesService],
 })
-export class UsersModule {}
+export class ProfilesModule {}

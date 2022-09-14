@@ -8,14 +8,15 @@ import { Repository } from 'typeorm';
 import { Organizations } from './organizations.entity';
 
 import { ImagesService } from 'src/images/images.service';
-import { Users } from 'src/users/users.entity';
+import { Profiles } from 'src/profiles/profiles.entity';
 
 @Injectable()
 export class OrganizationsService {
   constructor(
     @InjectRepository(Organizations)
     private organizationsRepository: Repository<Organizations>,
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
+    @InjectRepository(Profiles)
+    private profilesRepository: Repository<Profiles>,
     private readonly imageService: ImagesService,
   ) {}
 
@@ -39,7 +40,7 @@ export class OrganizationsService {
       //       'hosted_events',
       //       'admins.id',
       //       'admins.first_name',
-      //       'admins.linkedin_username',
+      //       'admins.linkedin_profilename',
       //       'admins.occupation',
       //     ])
       //     .take(limit)
@@ -58,7 +59,7 @@ export class OrganizationsService {
           'hosted_events',
           'admins.id',
           'admins.first_name',
-          'admins.linkedin_username',
+          'admins.linkedin_profilename',
           'admins.occupation',
         ])
         .take(limit)
@@ -77,7 +78,7 @@ export class OrganizationsService {
           'hosted_events',
           'admins.id',
           'admins.first_name',
-          'admins.linkedin_username',
+          'admins.linkedin_profilename',
           'admins.occupation',
         ])
         .getMany();
@@ -103,7 +104,7 @@ export class OrganizationsService {
         'hosted_events',
         'admins.id',
         'admins.first_name',
-        'admins.linkedin_username',
+        'admins.linkedin_profilename',
         'admins.occupation',
       ])
       .where('organizations.id = :id', { id })
@@ -158,19 +159,19 @@ export class OrganizationsService {
 
     // for setting admin
     const newAdmin = [];
-    const user = await this.usersRepository
-      .createQueryBuilder('users')
-      .where('users.id = :initial_admin', { initial_admin })
+    const profile = await this.profilesRepository
+      .createQueryBuilder('profiles')
+      .where('profiles.id = :initial_admin', { initial_admin })
       .getOne();
 
-    // make sure user exists
-    if (user == undefined || user == null)
+    // make sure profile exists
+    if (profile == undefined || profile == null)
       return response.status(400).json({
-        error: `this admin (user id ${initial_admin}) does not exist`,
+        error: `this admin (profile id ${initial_admin}) does not exist`,
       });
 
-    newAdmin.push(user);
-    console.log('new admin is ' + user);
+    newAdmin.push(profile);
+    console.log('new admin is ' + profile);
     newOrganization.admins = newAdmin;
 
     globalThis.Logger.log({ level: 'info', message: 'New Organization' });
@@ -189,7 +190,7 @@ export class OrganizationsService {
     // // } catch (e) {
     //   globalThis.Logger.log({
     //     level: 'info',
-    //     message: 'New User Response Error' + JSON.stringify(e),
+    //     message: 'New Profile Response Error' + JSON.stringify(e),
     //   });
     //   return response.status(400).json({ error: e });
     // // }
@@ -209,7 +210,7 @@ export class OrganizationsService {
         'organizations',
         'admins.id',
         'admins.first_name',
-        'admins.linkedin_username',
+        'admins.linkedin_profilename',
         'admins.occupation',
       ])
       .where('organizations.id = :id', { id })
@@ -244,23 +245,23 @@ export class OrganizationsService {
 
     let newAdmin = [];
     if (new_admin != undefined) {
-      const user = await this.usersRepository
-        .createQueryBuilder('users')
-        .where('users.id = :new_admin', { new_admin })
+      const profile = await this.profilesRepository
+        .createQueryBuilder('profiles')
+        .where('profiles.id = :new_admin', { new_admin })
         .getOne();
 
-      // make sure user exists
-      if (user == undefined || user == null)
+      // make sure profile exists
+      if (profile == undefined || profile == null)
         return response.status(400).json({
-          error: `this admin (user id ${new_admin}) does not exist`,
+          error: `this admin (profile id ${new_admin}) does not exist`,
         });
 
       // if  the org already has admins, get them & just push new one
       if (currentOrganization.admins != null)
         newAdmin = currentOrganization.admins;
 
-      newAdmin.push(user);
-      console.log('new attendee is ' + user);
+      newAdmin.push(profile);
+      console.log('new attendee is ' + profile);
       updatedOrganization.admins = newAdmin;
     }
 

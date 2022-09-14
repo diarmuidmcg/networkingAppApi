@@ -12,10 +12,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { Users } from './users/users.entity';
-import { UsersModule } from './users/users.module';
-import { UsersService } from './users/users.service';
-import { UsersController } from './users/users.controller';
+import { Profiles } from './profiles/profiles.entity';
+import { ProfilesModule } from './profiles/profiles.module';
+import { ProfilesService } from './profiles/profiles.service';
+import { ProfilesController } from './profiles/profiles.controller';
 
 import { Events } from './events/events.entity';
 import { EventsModule } from './events/events.module';
@@ -34,20 +34,20 @@ import { ImagesModule } from './images/images.module';
   imports: [
     TypeOrmModule.forRoot(config),
     WinstonModule.forRoot(logger.console()),
-    UsersModule,
+    ProfilesModule,
     EventsModule,
     OrganizationsModule,
     ImagesModule,
 
-    TypeOrmModule.forFeature([Users, Events, Organizations]),
+    TypeOrmModule.forFeature([Profiles, Events, Organizations]),
   ],
   controllers: [
     AppController,
-    UsersController,
+    ProfilesController,
     EventsController,
     ImagesController,
     OrganizationsController,
   ],
-  providers: [AppService, UsersService, EventsService, OrganizationsService],
+  providers: [AppService, ProfilesService, EventsService, OrganizationsService],
 })
 export class AppModule {}

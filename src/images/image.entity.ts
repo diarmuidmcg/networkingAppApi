@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/BaseEntity';
 
-import { Users } from 'src/users/users.entity';
+import { Profiles } from 'src/profiles/profiles.entity';
 import { Events } from 'src/events/events.entity';
 
 @Entity({ name: 'images' })
@@ -19,10 +19,10 @@ export class Image extends BaseEntity {
   @Column()
   public key: string;
 
-  @ManyToOne(() => Users, (user) => user.image, {
+  @ManyToOne(() => Profiles, (profile) => profile.image, {
     onDelete: 'CASCADE',
   })
-  user: Users;
+  profile: Profiles;
 
   @ManyToOne(() => Events, (event) => event.image, {
     cascade: true,

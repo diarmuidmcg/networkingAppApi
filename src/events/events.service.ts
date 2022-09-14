@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Events } from './events.entity';
 
 import { ImagesService } from 'src/images/images.service';
-import { Users } from 'src/users/users.entity';
+import { Profiles } from 'src/profiles/profiles.entity';
 import { Organizations } from 'src/organizations/organizations.entity';
 
 const validateDate = (date) => {
@@ -43,7 +43,8 @@ const validateTime = (time) => {
 export class EventsService {
   constructor(
     @InjectRepository(Events) private eventsRepository: Repository<Events>,
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
+    @InjectRepository(Profiles)
+    private profilesRepository: Repository<Profiles>,
     @InjectRepository(Organizations)
     private organizationsRepository: Repository<Organizations>,
     private readonly imageService: ImagesService,
@@ -68,11 +69,11 @@ export class EventsService {
             'image',
             'host.id',
             'host.first_name',
-            'host.linkedin_username',
+            'host.linkedin_profilename',
             'host.occupation',
             'attendees.id',
             'attendees.first_name',
-            'attendees.linkedin_username',
+            'attendees.linkedin_profilename',
             'attendees.occupation',
           ])
           .take(limit)
@@ -90,11 +91,11 @@ export class EventsService {
       //       'events',
       //       'host.id',
       //       'host.first_name',
-      //       'host.linkedin_username',
+      //       'host.linkedin_profilename',
       //       'host.occupation',
       //       'attendees.id',
       //       'attendees.first_name',
-      //       'attendees.linkedin_username',
+      //       'attendees.linkedin_profilename',
       //       'attendees.occupation',
       //     ])
       //     .take(limit)
@@ -113,11 +114,11 @@ export class EventsService {
             'image',
             'host.id',
             'host.first_name',
-            'host.linkedin_username',
+            'host.linkedin_profilename',
             'host.occupation',
             'attendees.id',
             'attendees.first_name',
-            'attendees.linkedin_username',
+            'attendees.linkedin_profilename',
             'attendees.occupation',
           ])
           .take(limit)
@@ -135,11 +136,11 @@ export class EventsService {
           'image',
           'host.id',
           'host.first_name',
-          'host.linkedin_username',
+          'host.linkedin_profilename',
           'host.occupation',
           'attendees.id',
           'attendees.first_name',
-          'attendees.linkedin_username',
+          'attendees.linkedin_profilename',
           'attendees.occupation',
         ])
         .getMany();
@@ -164,11 +165,11 @@ export class EventsService {
         'image',
         'host.id',
         'host.first_name',
-        'host.linkedin_username',
+        'host.linkedin_profilename',
         'host.occupation',
         'attendees.id',
         'attendees.first_name',
-        'attendees.linkedin_username',
+        'attendees.linkedin_profilename',
         'attendees.occupation',
       ])
       .where('events.id = :id', { id })
@@ -264,7 +265,7 @@ export class EventsService {
     // // } catch (e) {
     //   globalThis.Logger.log({
     //     level: 'info',
-    //     message: 'New User Response Error' + JSON.stringify(e),
+    //     message: 'New Profile Response Error' + JSON.stringify(e),
     //   });
     //   return response.status(400).json({ error: e });
     // // }
@@ -286,11 +287,11 @@ export class EventsService {
         'image',
         'host.id',
         'host.first_name',
-        'host.linkedin_username',
+        'host.linkedin_profilename',
         'host.occupation',
         'attendees.id',
         'attendees.first_name',
-        'attendees.linkedin_username',
+        'attendees.linkedin_profilename',
         'attendees.occupation',
       ])
       .where('events.id = :id', { id })
@@ -364,22 +365,22 @@ export class EventsService {
     let newAttendees = [];
     // attendees must be an array
     if (attendee != undefined) {
-      const user = await this.usersRepository
-        .createQueryBuilder('users')
-        .where('users.id = :attendee', { attendee })
+      const profile = await this.profilesRepository
+        .createQueryBuilder('profiles')
+        .where('profiles.id = :attendee', { attendee })
         .getOne();
 
-      // make sure user exists
-      if (user == undefined || user == null)
+      // make sure profile exists
+      if (profile == undefined || profile == null)
         return response.status(400).json({
-          error: `this attendee (user id ${attendee}) does not exist`,
+          error: `this attendee (profile id ${attendee}) does not exist`,
         });
       // if  the event already has attendees, get them & just push new one
       if (currentEvent.attendees != null) newAttendees = currentEvent.attendees;
 
-      newAttendees.push(user);
-      console.log('new attendee is ' + user);
-      updatedEvent.attendees = newAttendees;
+      newAttendees.push(profile);
+      console.log('new attendee is ' + profile);
+      // updatedEvent.attendees = newAttendees;
     }
 
     globalThis.Logger.log({ level: 'info', message: 'Update Event' });

@@ -3,7 +3,7 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-# User-specific stuff:
+# Profile-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
@@ -55,14 +55,14 @@ fabric.properties
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# User-specific files
+# Profile-specific files
 *.suo
-*.user
-*.userosscache
+*.profile
+*.profileosscache
 *.sln.docstates
 
-# User-specific files (MonoDevelop/Xamarin Studio)
-*.userprefs
+# Profile-specific files (MonoDevelop/Xamarin Studio)
+*.profileprefs
 
 # Build results
 [Dd]ebug/
@@ -160,7 +160,7 @@ $tf/
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
-*.DotSettings.user
+*.DotSettings.profile
 
 # JustCode is a .NET coding add-in
 .JustCode

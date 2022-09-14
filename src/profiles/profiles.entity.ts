@@ -11,8 +11,8 @@ import {
 import { Image } from 'src/images/image.entity';
 import { Events } from 'src/events/events.entity';
 import { Organizations } from 'src/organizations/organizations.entity';
-@Entity('users')
-export class Users extends BaseEntity {
+@Entity('profiles')
+export class Profiles extends BaseEntity {
   // separated these out incase we want to only diplay first name at some stage
   @Column({ type: 'varchar', length: 150, nullable: false })
   first_name: string;
@@ -31,12 +31,12 @@ export class Users extends BaseEntity {
   occupation: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
-  linkedin_username: string;
+  linkedin_profilename: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
-  instagram_username: string;
+  instagram_profilename: string;
 
-  @OneToMany(() => Image, (image) => image.user, {
+  @OneToMany(() => Image, (image) => image.profile, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

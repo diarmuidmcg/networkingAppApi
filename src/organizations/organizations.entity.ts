@@ -9,7 +9,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Image } from 'src/images/image.entity';
-import { Users } from 'src/users/users.entity';
+import { Profiles } from 'src/profiles/profiles.entity';
 import { Events } from 'src/events/events.entity';
 @Entity('organizations')
 export class Organizations extends BaseEntity {
@@ -28,11 +28,11 @@ export class Organizations extends BaseEntity {
   @JoinColumn()
   image: Image[];
 
-  @OneToMany(() => Users, (user) => user.organization, {
+  @OneToMany(() => Profiles, (profile) => profile.organization, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  admins: Users[];
+  admins: Profiles[];
 
   @OneToMany(() => Events, (event) => event.organization, {
     onDelete: 'CASCADE',
