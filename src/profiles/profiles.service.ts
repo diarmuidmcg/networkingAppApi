@@ -58,6 +58,8 @@ export class ProfilesService {
       linkedin_profilename,
       instagram_profilename,
       orgId,
+      auth_identifier,
+      bio,
     } = request.body;
 
     // type check all NOT Nullable
@@ -65,6 +67,8 @@ export class ProfilesService {
     if (!first_name) mustInclude.push('first_name');
     if (!last_name) mustInclude.push('last_name');
     if (!email) mustInclude.push('email');
+    if (!auth_identifier) mustInclude.push('auth_identifier');
+
     // type check email
     if (!validateEmail(email)) mustInclude.push('email must be proper format');
     if (mustInclude.length > 0)
@@ -84,6 +88,8 @@ export class ProfilesService {
       linkedin_profilename !== null ? linkedin_profilename : '';
     newProfile.instagram_profilename =
       instagram_profilename !== null ? instagram_profilename : '';
+    newProfile.auth_identifier = auth_identifier;
+    newProfile.bio = bio !== null ? bio : '';
 
     // set org
     if (orgId != undefined) {
@@ -133,6 +139,7 @@ export class ProfilesService {
       linkedin_profilename,
       instagram_profilename,
       orgId,
+      bio,
     } = request.body;
     const { id } = request.params;
 
@@ -152,8 +159,6 @@ export class ProfilesService {
 
     // type check all NOT Nullable
     let mustInclude = [];
-    if (first_name != undefined) updatedProfile.first_name = first_name;
-    if (last_name != undefined) updatedProfile.last_name = last_name;
     if (email != undefined) {
       // type check email
       if (!validateEmail(email))
@@ -168,12 +173,15 @@ export class ProfilesService {
           JSON.stringify(mustInclude),
       });
 
+    if (first_name != undefined) updatedProfile.first_name = first_name;
+    if (last_name != undefined) updatedProfile.last_name = last_name;
     if (phone_number != undefined) updatedProfile.phone_number = phone_number;
     if (occupation != undefined) updatedProfile.occupation = occupation;
     if (linkedin_profilename != undefined)
       updatedProfile.linkedin_profilename = linkedin_profilename;
     if (instagram_profilename != undefined)
       updatedProfile.instagram_profilename = instagram_profilename;
+    if (bio != undefined) updatedProfile.bio = bio;
 
     // set org
     if (orgId != undefined) {

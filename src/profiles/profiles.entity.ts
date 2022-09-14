@@ -30,6 +30,12 @@ export class Profiles extends BaseEntity {
   @Column({ type: 'varchar', length: 150, nullable: true })
   occupation: string;
 
+  @Column({ type: 'text', nullable: true })
+  bio: string;
+
+  @Column({ type: 'text', nullable: true })
+  auth_identifier: string;
+
   @Column({ type: 'varchar', length: 150, nullable: true })
   linkedin_profilename: string;
 
