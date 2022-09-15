@@ -252,6 +252,22 @@ export class EventsService {
       newEvent.organization = organization;
     }
 
+    // for adding host
+    const host = await this.profilesRepository
+      .createQueryBuilder('profiles')
+      .where('profiles.id = :hostId', { hostId })
+      .getOne();
+
+    // make sure profile exists
+    if (host == undefined || host == null)
+      return response.status(400).json({
+        error: `this host (profile id ${hostId}) does not exist`,
+      });
+
+    console.log('new host is ' + host);
+    newEvent.host = host;
+    // updatedEvent.attendees = newAttendees;
+
     globalThis.Logger.log({ level: 'info', message: 'New Event' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newEvent) });
 
