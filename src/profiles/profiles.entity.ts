@@ -33,14 +33,14 @@ export class Profiles extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   bio: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: false })
   auth_identifier: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
-  linkedin_profilename: string;
+  linkedin_username: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
-  instagram_profilename: string;
+  instagram_username: string;
 
   @OneToMany(() => Image, (image) => image.profile, {
     onDelete: 'CASCADE',

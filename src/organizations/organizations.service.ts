@@ -40,7 +40,7 @@ export class OrganizationsService {
       //       'hosted_events',
       //       'admins.id',
       //       'admins.first_name',
-      //       'admins.linkedin_profilename',
+      //       'admins.linkedin_username',
       //       'admins.occupation',
       //     ])
       //     .take(limit)
@@ -59,7 +59,7 @@ export class OrganizationsService {
           'hosted_events',
           'admins.id',
           'admins.first_name',
-          'admins.linkedin_profilename',
+          'admins.linkedin_username',
           'admins.occupation',
         ])
         .take(limit)
@@ -78,7 +78,7 @@ export class OrganizationsService {
           'hosted_events',
           'admins.id',
           'admins.first_name',
-          'admins.linkedin_profilename',
+          'admins.linkedin_username',
           'admins.occupation',
         ])
         .getMany();
@@ -104,7 +104,7 @@ export class OrganizationsService {
         'hosted_events',
         'admins.id',
         'admins.first_name',
-        'admins.linkedin_profilename',
+        'admins.linkedin_username',
         'admins.occupation',
       ])
       .where('organizations.id = :id', { id })
@@ -210,7 +210,7 @@ export class OrganizationsService {
         'organizations',
         'admins.id',
         'admins.first_name',
-        'admins.linkedin_profilename',
+        'admins.linkedin_username',
         'admins.occupation',
       ])
       .where('organizations.id = :id', { id })

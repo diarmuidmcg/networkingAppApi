@@ -69,11 +69,11 @@ export class EventsService {
             'image',
             'host.id',
             'host.first_name',
-            'host.linkedin_profilename',
+            'host.linkedin_username',
             'host.occupation',
             'attendees.id',
             'attendees.first_name',
-            'attendees.linkedin_profilename',
+            'attendees.linkedin_username',
             'attendees.occupation',
           ])
           .take(limit)
@@ -91,11 +91,11 @@ export class EventsService {
       //       'events',
       //       'host.id',
       //       'host.first_name',
-      //       'host.linkedin_profilename',
+      //       'host.linkedin_username',
       //       'host.occupation',
       //       'attendees.id',
       //       'attendees.first_name',
-      //       'attendees.linkedin_profilename',
+      //       'attendees.linkedin_username',
       //       'attendees.occupation',
       //     ])
       //     .take(limit)
@@ -114,11 +114,11 @@ export class EventsService {
             'image',
             'host.id',
             'host.first_name',
-            'host.linkedin_profilename',
+            'host.linkedin_username',
             'host.occupation',
             'attendees.id',
             'attendees.first_name',
-            'attendees.linkedin_profilename',
+            'attendees.linkedin_username',
             'attendees.occupation',
           ])
           .take(limit)
@@ -136,11 +136,11 @@ export class EventsService {
           'image',
           'host.id',
           'host.first_name',
-          'host.linkedin_profilename',
+          'host.linkedin_username',
           'host.occupation',
           'attendees.id',
           'attendees.first_name',
-          'attendees.linkedin_profilename',
+          'attendees.linkedin_username',
           'attendees.occupation',
         ])
         .getMany();
@@ -165,11 +165,11 @@ export class EventsService {
         'image',
         'host.id',
         'host.first_name',
-        'host.linkedin_profilename',
+        'host.linkedin_username',
         'host.occupation',
         'attendees.id',
         'attendees.first_name',
-        'attendees.linkedin_profilename',
+        'attendees.linkedin_username',
         'attendees.occupation',
       ])
       .where('events.id = :id', { id })
@@ -182,8 +182,16 @@ export class EventsService {
   }
 
   public async createEvent(files, request, response): Promise<Events[]> {
-    const { title, location, date, time, price, description, hostId, orgId } =
-      request.body;
+    const {
+      title,
+      location,
+      date,
+      time,
+      price,
+      description,
+      hostId,
+      orgId,
+    } = request.body;
 
     // type check all NOT Nullable
     let mustInclude = [];
@@ -264,9 +272,7 @@ export class EventsService {
         error: `this host (profile id ${hostId}) does not exist`,
       });
 
-    console.log('new host is ' + host);
     newEvent.host = host;
-    // updatedEvent.attendees = newAttendees;
 
     globalThis.Logger.log({ level: 'info', message: 'New Event' });
     globalThis.Logger.log({ level: 'info', message: JSON.stringify(newEvent) });
@@ -288,8 +294,16 @@ export class EventsService {
   }
 
   public async updateEvent(files, request, response) {
-    const { title, location, date, time, price, description, attendee, orgId } =
-      request.body;
+    const {
+      title,
+      location,
+      date,
+      time,
+      price,
+      description,
+      attendee,
+      orgId,
+    } = request.body;
     const { id } = request.params;
 
     // fetch current profile from db
@@ -303,11 +317,11 @@ export class EventsService {
         'image',
         'host.id',
         'host.first_name',
-        'host.linkedin_profilename',
+        'host.linkedin_username',
         'host.occupation',
         'attendees.id',
         'attendees.first_name',
-        'attendees.linkedin_profilename',
+        'attendees.linkedin_username',
         'attendees.occupation',
       ])
       .where('events.id = :id', { id })

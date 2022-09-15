@@ -55,8 +55,8 @@ export class ProfilesService {
       email,
       phone_number,
       occupation,
-      linkedin_profilename,
-      instagram_profilename,
+      linkedin_username,
+      instagram_username,
       orgId,
       auth_identifier,
       bio,
@@ -84,10 +84,10 @@ export class ProfilesService {
     newProfile.email = email !== null ? email : '';
     newProfile.phone_number = phone_number !== null ? phone_number : '';
     newProfile.occupation = occupation !== null ? occupation : '';
-    newProfile.linkedin_profilename =
-      linkedin_profilename !== null ? linkedin_profilename : '';
-    newProfile.instagram_profilename =
-      instagram_profilename !== null ? instagram_profilename : '';
+    newProfile.linkedin_username =
+      linkedin_username !== null ? linkedin_username : '';
+    newProfile.instagram_username =
+      instagram_username !== null ? instagram_username : '';
     newProfile.auth_identifier = auth_identifier;
     newProfile.bio = bio !== null ? bio : '';
 
@@ -136,8 +136,8 @@ export class ProfilesService {
       email,
       phone_number,
       occupation,
-      linkedin_profilename,
-      instagram_profilename,
+      linkedin_username,
+      instagram_username,
       orgId,
       bio,
     } = request.body;
@@ -177,10 +177,10 @@ export class ProfilesService {
     if (last_name != undefined) updatedProfile.last_name = last_name;
     if (phone_number != undefined) updatedProfile.phone_number = phone_number;
     if (occupation != undefined) updatedProfile.occupation = occupation;
-    if (linkedin_profilename != undefined)
-      updatedProfile.linkedin_profilename = linkedin_profilename;
-    if (instagram_profilename != undefined)
-      updatedProfile.instagram_profilename = instagram_profilename;
+    if (linkedin_username != undefined)
+      updatedProfile.linkedin_username = linkedin_username;
+    if (instagram_username != undefined)
+      updatedProfile.instagram_username = instagram_username;
     if (bio != undefined) updatedProfile.bio = bio;
 
     // set org
